@@ -1,18 +1,24 @@
 import argparse
 import pandas as pd
+import os
 from sqlalchemy import create_engine
 
 def main(params):
     engine = create_engine(f'postgresql://{params.username}:{params.password}@{params.host}:{params.port}/{params.db_name}')
     engine.connect()
 
-    df_taxi = pd.read_csv("yellow_tripdata_2021-01.csv", nrows=100)
+    download_name = "taxi_data.csv.gz"
+    os.system(f"wget -O {download_name} {params.url}")
+    os.system(f"gzip -d {download_name}")
+
+    csv_name = "taxi_data.csv"
+    df_taxi = pd.read_csv(csv_name, nrows=100)
     df_taxi['tpep_pickup_datetime'] = pd.to_datetime(df_taxi['tpep_pickup_datetime'])
     df_taxi['tpep_dropoff_datetime'] = pd.to_datetime(df_taxi['tpep_dropoff_datetime'])
 
     df_taxi.head(0).to_sql(name=params.table_name, con=engine, if_exists='replace')
 
-    for chunk in pd.read_csv("yellow_tripdata_2021-01.csv", chunksize=100000):
+    for chunk in pd.read_csv(csv_name, chunksize=100000):
         print("Start inserting chunk")
         chunk['tpep_pickup_datetime'] = pd.to_datetime(chunk['tpep_pickup_datetime'])
         chunk['tpep_dropoff_datetime'] = pd.to_datetime(chunk['tpep_dropoff_datetime'])
