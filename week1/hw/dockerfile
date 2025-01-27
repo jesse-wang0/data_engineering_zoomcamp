@@ -1,0 +1,9 @@
+FROM python:latest
+
+RUN apt-get install wget \
+    && pip install pandas sqlalchemy psycopg2
+
+WORKDIR /app
+COPY ingest_script.py pipeline.py 
+
+ENTRYPOINT [ "python", "pipeline.py"]
