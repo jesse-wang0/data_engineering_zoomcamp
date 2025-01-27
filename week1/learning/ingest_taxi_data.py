@@ -22,7 +22,7 @@ def main(params):
         print("Start inserting chunk")
         chunk['tpep_pickup_datetime'] = pd.to_datetime(chunk['tpep_pickup_datetime'])
         chunk['tpep_dropoff_datetime'] = pd.to_datetime(chunk['tpep_dropoff_datetime'])
-        chunk.to_sql(name='yellow_taxi_data', con=engine, if_exists='append')
+        chunk.to_sql(name=params.table_name, con=engine, if_exists='append')
         print("Finish inserting chunk")
 
 if __name__ == "__main__":
