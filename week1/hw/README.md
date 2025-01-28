@@ -43,15 +43,17 @@ FROM green_taxi_data
 WHERE lpep_dropoff_datetime >= '2019-10-01'
 	AND lpep_dropoff_datetime < '2019-11-1'
 	AND trip_distance > 10;
-
-- Q5) 2019-10-31
+```
+- Q4) 2019-10-31
+``` sql
 SELECT lpep_pickup_datetime, trip_distance
 FROM green_taxi_data
 WHERE trip_distance = (
     SELECT MAX(trip_distance) FROM green_taxi_data
 );
-
+```
 - Q5) East Harlem North, East Harlem South, Morningside Heights
+``` sql
 SELECT g."PULocationID", z."Zone", SUM(total_amount)
 FROM green_taxi_data g
 JOIN zones z ON z."LocationID"=g."PULocationID"
@@ -60,8 +62,9 @@ WHERE lpep_pickup_datetime>='2019-10-18'
 GROUP BY g."PULocationID", z."Zone"
 HAVING SUM(total_amount) > 13000
 ORDER BY sum DESC;
-
-- Q6) East Harlem North
+```
+- Q6) East Harlem North\
+``` sql
 SELECT g."lpep_pickup_datetime", g."tip_amount", z."Zone" as drop_off_zone
 FROM green_taxi_data g
 JOIN zones z ON z."LocationID"=g."PULocationID"
@@ -72,7 +75,5 @@ WHERE g.tip_amount = (
 	WHERE lpep_pickup_datetime>='2019-10-01' 
 		AND lpep_pickup_datetime<'2019-11-01'
 		AND z."Zone"='East Harlem North')  
-
-
-
+```
 - Q7) terraform init, terraform apply -auto-approve, terraform destroy
